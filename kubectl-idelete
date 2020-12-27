@@ -63,11 +63,8 @@ else
     echo "This plugin curently only supports sts | deploy deletion verification, exiting..."
     exit 1
 fi
-if [ $resource == "sts" ]; then
-    ready_replicas=$(kubectl get sts $2 -ojson | jq -r '.status.readyReplicas')
-elif [ $resource == "deploy" ]; then
-    ready_replicas=$(kubectl get deploy $2 -ojson | jq -r '.status.readyReplicas')
-fi
+
+ready_replicas=$(kubectl get $1 $2 -ojson | jq -r '.status.readyReplicas')
 echo "${RED}This $1 ($2) has $ready_replicas Running pods, do you want to proceed and delete it (y/n)? This could disrupt the underlying application!"
 # Display current k8s context (cluster) and namespace (are you in a production environment?)
 if [ ! $4 ]; then
