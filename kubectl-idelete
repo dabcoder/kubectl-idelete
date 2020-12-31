@@ -71,19 +71,25 @@ else
 fi
 
 ready_replicas=$(kubectl get $1 $2 -ojson | jq -r '.status.readyReplicas')
-echo "${RED}This $1 ($2) has $ready_replicas Running pods, do you want to proceed and delete it (y/n)? This could disrupt the underlying application!"
-# Display current k8s context (cluster) and namespace (are you in a production environment?)
-if [ ! $4 ]; then
-    echo "${YELLOW}Current k8s cluster/namespace: ${current_context}/${ns}"
-else
-    echo "${YELLOW}Current k8s cluster/namespace: ${current_context}/${4}"
-fi
 
-read user_input
-if [ $user_input == "y" ] || [ $user_input == "Y" ] || [ $user_input == "yes" ] || [ $user_input == "YES" ]; then
-    # Pass the context for a safer sts deletion
-    kubectl --context $current_context delete $1 $2
+if [ ready_replicas > 0 ]; then
+    echo "${RED}This $1 ($2) has $ready_replicas Running pods, do you want to proceed and delete it (y/n)? This could disrupt the underlying application!"
+    # Display current k8s context (cluster) and namespace (are you in a production environment?)
+    if [ ! $4 ]; then
+        echo "${YELLOW}Current k8s cluster/namespace: ${current_context}/${ns}"
+    else
+        echo "${YELLOW}Current k8s cluster/namespace: ${current_context}/${4}"
+    fi
+
+    read user_input
+    if [ $user_input == "y" ] || [ $user_input == "Y" ] || [ $user_input == "yes" ] || [ $user_input == "YES" ]; then
+        # Pass the context for a safer sts deletion
+        kubectl --context $current_context delete $1 $2
+    else
+        echo "\e[0mAborting this $1 deletion"
+        exit 1
+    fi
 else
-    echo "\e[0mAborting this $1 deletion"
-    exit 1
+    # No running pods, deleting...
+    kubectl --context $current_context delete $1 $2
 fi

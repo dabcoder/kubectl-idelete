@@ -1,14 +1,17 @@
 ## kubectl idelete
 
+### Disclaimer
+
+This is a kubectl plugin that has not been tested in production nor even in a staging environment, currently in development.
+
 Safely delete some Kubernetes resources with a prompt to confirm.
-For instance, do you remember deleting a deployment or a statefulset in a production environment? This should help avoiding that!
 
 Note: currently supports `deployments` and `statefulsets` only.
 
 ### Install
 
 ```
-curl -fsS -o /usr/local/bin/kubectl-idelete \
+curl -sS -o /usr/local/bin/kubectl-idelete \
     https://raw.githubusercontent.com/dabcoder/kubectl-idelete/master/kubectl-idelete && \
         chmod +x /usr/local/bin/kubectl-idelete
 ```
