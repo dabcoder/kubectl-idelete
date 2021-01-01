@@ -6,7 +6,9 @@ RED=$(echo -en '\033[00;31m')
 YELLOW=$(echo -en '\033[00;33m')
 
 usage () {
-    echo "Usage: kubectl idelete sts | statefulset | deploy | deployment <name> [-n | --namespace] <namespace>"
+    echo "Usage: kubectl idelete sts | statefulset(s) | deploy | deployment(s) <resource_name> [-n | --namespace] <namespace>"
+    echo "E.g:"
+    echo "kubectl idelete sts consul -n consul"
 }
 
 # Check if jq is installed
@@ -83,7 +85,7 @@ if [ ready_replicas > 0 ]; then
 
     read user_input
     if [ $user_input == "y" ] || [ $user_input == "Y" ] || [ $user_input == "yes" ] || [ $user_input == "YES" ]; then
-        # Pass the context for a safer sts deletion
+        # Pass the context for a safer deletion
         if [[ $namespace ]]; then
             kubectl --context $current_context delete -n $namespace $1 $2
         else

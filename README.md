@@ -2,11 +2,11 @@
 
 ### Disclaimer
 
-This is a kubectl plugin that has not been tested in production nor even in a staging environment, currently in development.
+This is a kubectl plugin that has not been tested in production nor even in a staging environment, currently in development. Mostly an exercise in writing a kubectl plugin for the first time.
 
-Safely delete some Kubernetes resources with a prompt to confirm.
+Aim: Safely delete some Kubernetes resources with a prompt to confirm.
 
-Note: currently supports `deployments` and `statefulsets` only.
+Note: currently supports `deployments` and `statefulsets` as resources only.
 
 ### Install
 
