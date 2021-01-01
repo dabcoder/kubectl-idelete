@@ -33,24 +33,22 @@ exit_err() {
 # Get current k8s cluster and namespace
 current_context=$(kubectl config current-context) || exit_err "error getting current context"
 
-# if [ !namespace ]; then
 current_namespace="$(kubectl config view -o=jsonpath="{.contexts[?(@.name==\"${current_context}\")].context.namespace}")" \
     || exit_err "error getting current namespace"
-# fi
 
 if [ $# -eq 0 ]; then
     usage
     exit 0
 fi
 
-# if [[ $1 != "sts" ]] || [[ $1 != "statefulset" ]] || [[ $1 != "statefulsets" ]] || [[ $1 != "deploy" ]] || [[ $1 != "deployment" ]] || [[ $1 !  = "deployments" ]]; then
-#     echo "This plugin curently only supports sts | deploy deletion verification, exiting..."
-#     exit 1
-# fi
+if [ $1 != "sts" ] && [ $1 != "statefulset" ] && [ $1 != "statefulsets" ] && [ $1 != "deploy" ] && [ $1 != "deployment" ] && [ $1 != "deployments" ]; then
+    echo "This plugin curently only supports sts | deploy deletion verification, exiting..."
+    exit 1
+fi
 
 # The namespace was not specifically provided, get the current namespace
 if [ -z $3 ]; then
-    if [[ -z $current_namespace ]]; then
+    if [ -z $current_namespace ]; then
         ns="default"
     else
         ns=$current_namespace
@@ -68,26 +66,38 @@ else
     exit 1
 fi
 
-ready_replicas=$(kubectl get $1 $2 -ojson | jq -r '.status.readyReplicas')
+if [ $namespace ]; then
+    ready_replicas=$(kubectl get -n $namespace $1 $2 -ojson | jq -r '.status.readyReplicas')
+else
+    ready_replicas=$(kubectl get $1 $2 -ojson | jq -r '.status.readyReplicas')
+fi
 
 if [ ready_replicas > 0 ]; then
     echo "${RED}This $1 ($2) has $ready_replicas Running pods, do you want to proceed and delete it (y/n)? This could disrupt the underlying application!"
     # Display current k8s context (cluster) and namespace (are you in a production environment?)
-    if [ ! $4 ]; then
-        echo "${YELLOW}Current k8s cluster/namespace: ${current_context}/${ns}"
+    if [[ $namespace ]]; then
+        echo "${YELLOW}Current k8s cluster/namespace: ${current_context}/${namespace}"
     else
-        echo "${YELLOW}Current k8s cluster/namespace: ${current_context}/${4}"
+        echo "${YELLOW}Current k8s cluster/namespace: ${current_context}/${ns}"
     fi
 
     read user_input
     if [ $user_input == "y" ] || [ $user_input == "Y" ] || [ $user_input == "yes" ] || [ $user_input == "YES" ]; then
         # Pass the context for a safer sts deletion
-        kubectl --context $current_context delete $1 $2
+        if [[ $namespace ]]; then
+            kubectl --context $current_context delete -n $namespace $1 $2
+        else
+            kubectl --context $current_context delete $1 $2
+        fi
     else
-        echo "\e[0mAborting this $1 deletion"
+        echo "Aborting this $1 deletion"
         exit 1
     fi
 else
     # No running pods, deleting...
-    kubectl --context $current_context delete $1 $2
+    if [ $namespace ]; then
+        kubectl --context $current_context delete -n $namespace $1 $2
+    else
+        kubectl --context $current_context delete $1 $2
+    fi
 fi
