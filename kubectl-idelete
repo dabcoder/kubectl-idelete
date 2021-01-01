@@ -17,6 +17,7 @@ if ! [ $(command -v jq) ]; then
     exit 1
 fi
 
+## TODO: List supported resources and use them in conditionals
 # supported_resources=(
 #     "statefulset"
 #     "statefulsets"
@@ -43,6 +44,7 @@ if [ $# -eq 0 ]; then
     exit 0
 fi
 
+# TODO: use the above supported_resources array
 if [ $1 != "sts" ] && [ $1 != "statefulset" ] && [ $1 != "statefulsets" ] && [ $1 != "deploy" ] && [ $1 != "deployment" ] && [ $1 != "deployments" ]; then
     echo "This plugin curently only supports sts | deploy deletion verification, exiting..."
     exit 1
