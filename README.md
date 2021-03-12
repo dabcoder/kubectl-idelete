@@ -6,7 +6,7 @@ This is a kubectl plugin that has not been tested in production nor even in a st
 
 Aim: Safely delete some Kubernetes resources with a prompt to confirm.
 
-Note: currently supports `deployments` and `statefulsets` as resources only.
+Note: currently supports `deployments` and `statefulsets` only.
 
 ### Install
 
@@ -23,7 +23,7 @@ Check that `/usr/local/bin` is in your `$PATH` beforehand.
 ```
 kubectl idelete
 
-Usage: kubectl idelete sts | statefulset | deploy | deploymnent <name> [-n | --namespace] <namespace>
+Usage: kubectl idelete sts | statefulset | deploy | deploymnent <name> [-n|--namespace] <namespace>
 ```
 
 The order of arguments matter. i.e. the namespace `-n <namespace>` needs to be passed at the end.
@@ -32,5 +32,5 @@ For example:
 ```
 kubectl idelete sts consul -n consul
 
-This sts has 3 Running pods, do you want to proceed and delete it (y/n)? This could disrupt the underlying application!"
+This sts (consul) has 3 Running pods, do you want to proceed and delete it  (only "yes" will be accepted)? This could disrupt the underlying application!"
 ```
