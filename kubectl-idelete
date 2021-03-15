@@ -14,17 +14,11 @@ if [[ $# -eq 0 ]]; then
     exit 1
 fi
 
-# Error handling
-exit_err() {
-   echo >&2 "${1}"
-   exit 1
-}
-
 # Get current k8s cluster and namespace
-current_context=$(kubectl config current-context) || exit_err "error getting current context"
+current_context=$(kubectl config current-context) || echo "error getting current context" && exit 1
 
 current_namespace="$(kubectl config view -o=jsonpath="{.contexts[?(@.name==\"${current_context}\")].context.namespace}")" \
-    || exit_err "error getting current namespace"
+    || echo "error getting current namespace" && exit 1
 
 if [[ -z $current_namespace ]]; then
     ns="default"

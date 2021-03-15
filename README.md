@@ -2,7 +2,7 @@
 
 ### Disclaimer
 
-This is a kubectl plugin that has not been tested in production nor even in a staging environment, currently in development using minikube for testing. Mostly an exercise in writing a kubectl plugin for the first time. Use it at your own risks.
+This is a kubectl plugin that has not been tested in production nor even in a staging environment, currently in development using `minikube` for testing. Mostly an exercise in writing a kubectl plugin for the first time. Use it at your own risks.
 
 Aim: Safely delete some Kubernetes resources with a prompt to confirm.
 
@@ -23,7 +23,7 @@ Check that `/usr/local/bin` is in your `$PATH` beforehand.
 ```
 kubectl idelete
 
-Usage: kubectl idelete sts | statefulset | deploy | deploymnent <name> [-n|--namespace] <namespace>
+Usage: kubectl idelete sts | statefulset | deploy | deployment <name> [-n|--namespace] <namespace>
 ```
 
 The order of arguments matter. i.e. the namespace `-n <namespace>` needs to be passed at the end.
